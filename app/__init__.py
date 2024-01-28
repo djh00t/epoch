@@ -11,6 +11,8 @@ def create_app():
     configure_uploads(app, images)
 
     # Additional configuration can go here
+    app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(app.instance_path, 'uploads')
+    app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/uploads/'
 
     with app.app_context():
         # Include our Routes
