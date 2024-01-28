@@ -2,68 +2,87 @@ Comprehensive Project Plan
 
 Phase 1: Web Framework Setup
 1. Flask Application Initialization
-   - Set up a basic Flask application structure.
+   - Set up a robust Flask application structure with a focus on modularity and reusability.
    - Configure essential Flask extensions (Flask-Uploads for file handling, etc.).
+   - Ensure the application structure supports multithreaded operations and large file handling.
+   - Establish a systems design document outlining module interactions and technology stack.
 
 2. File Upload System
-   - Implement a file upload interface to handle multiple files up to 50MB each.
+   - Implement a file upload interface to handle multiple files, with support for large files and zip/gzip file upload/unpack.
    - Ensure multithreading support for efficient handling of large-scale uploads.
+   - Implement security measures to sanitize and validate uploaded files to prevent malicious uploads.
 
 3. File Storage and Management
    - Develop a system for securely storing and managing the uploaded images.
    - Organize files in a structured manner for easy retrieval and processing.
+   - Implement a database or structured file system for efficient metadata storage and retrieval.
 
 Phase 2: Image Processing and Metadata Extraction
 1. Metadata Extraction
-   - Extract metadata (like date) from the uploaded images.
+   - Extract and parse metadata (EXIF data, including date and time) from the uploaded images.
    - Sort and group images based on extracted metadata.
+   - Design the metadata extraction module to be reusable and easily integrated with other system components.
 
 2. Image Preprocessing
    - Implement preprocessing steps (resizing, format standardization) as needed for consistent processing.
+   - Ensure preprocessing maintains image quality and adheres to the requirements for timelapse video creation.
 
 Phase 3: Subject Identification
 1. Initial Subject Identification
-   - Develop an algorithm to identify potential subjects in each image.
+   - Utilize computer vision techniques or machine learning models to identify and highlight subjects within each image.
    - Implement machine learning or computer vision techniques as required.
+   - Ensure the subject identification module is designed for easy integration with user feedback systems.
 
 2. Integration with Web Interface
    - Display identified subjects through the Flask app.
    - Allow users to verify, choose, or modify the identified subjects.
+   - Create a user interface that allows rapid navigation and verification of subject identification in a low-resolution format.
+   - Implement a feedback loop that captures user corrections and integrates them into the subject identification process.
 
 Phase 4: User Feedback and Image Adjustment
 1. User Feedback Handling
-   - Implement a feedback loop in the Flask app for user input on subject identification.
+   - Develop a comprehensive feedback interface for user input on subject identification and image adjustments.
    - Adjust the identification process based on user feedback.
+   - Integrate user feedback directly into the machine learning or computer vision models to improve accuracy.
 
 2. Cropping and Zooming
-   - Implement functionality to crop and zoom images based on the confirmed subject.
+   - Develop algorithms for cropping, zooming, and optionally removing the background to focus on the subject.
+   - Ensure algorithms maintain consistency in subject size, perspective, and proportion across all images.
 
 Phase 5: Report Generation and Video Creation
 1. Report Generation
    - Generate a report showing each date, summary of photos, and the chosen image.
+   - Include metadata and user feedback in the report to provide insights into the selection process.
    - Integrate report generation in the Flask app.
 
 2. Timelapse Video Generation
-   - Create a timelapse video from the selected and adjusted images.
+   - Compile adjusted images into a high-quality timelapse video, adhering to user-defined criteria for frame rate and duration.
    - Ensure the video is at least 10 seconds long and adheres to the specified frame rate criteria.
+   - Provide video resolution options (720p, 1080p, 4K) and intelligently upscale/downscale images as needed.
 
 Phase 6: Testing, Refinement, and Deployment
 1. Testing
    - Conduct thorough testing of each component, especially the file upload and user feedback system.
    - Test the overall workflow from file upload to video generation.
+   - Achieve 100% pytest coverage for all modules, ensuring robustness and reliability.
 
 2. Refinement Based on Feedback
    - Refine the application based on testing outcomes and potential user feedback.
+   - Implement continuous integration/continuous deployment (CI/CD) pipelines to streamline testing and deployment.
 
 3. Deployment Preparation
-   - Containerize the Flask app using Docker.
+   - Containerize each module of the Flask app using Docker, adhering to microservices architecture principles.
    - Prepare for deployment on a suitable platform.
+   - Ensure all containers are secure and comply with best practices for production environments.
 
 Phase 7: Documentation and Finalization
 1. Documentation
-   - Create comprehensive documentation for the project.
+   - Create comprehensive documentation for the project using Google docstrings and README.md files.
    - Include setup instructions, usage guidelines, and system requirements.
+   - Document the API references and ensure all modules are well-documented as if they are standalone libraries.
 
 2. Finalization
    - Final checks and validation before release.
    - Launch the application for use.
+   - Conduct user acceptance testing (UAT) to validate the application against real-world scenarios.
+   - Ensure the application is scalable and ready for potential future mobile app integration.
