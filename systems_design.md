@@ -9,6 +9,7 @@ This document outlines the high-level architecture of the Epoch Flask applicatio
 
 ## Modules
 - **Web Framework Setup**: Responsible for initializing the Flask application and setting up the routing system.
+- **Flask Extensions**: Handles the initialization and configuration of Flask extensions such as Flask-Uploads for file handling.
 - **File Upload System**: Handles the uploading, storage, and management of image files.
 - **Image Processing**: Processes images for metadata extraction, subject identification, and adjustments.
 - **User Feedback**: Manages user interactions for verifying and correcting subject identification and image adjustments.
@@ -16,6 +17,7 @@ This document outlines the high-level architecture of the Epoch Flask applicatio
 
 ## Technology Stack
 - Flask for the web framework.
+- Flask-Uploads for handling file uploads.
 - Flask-Uploads for handling file uploads.
 - Python libraries such as OpenCV for image processing.
 - Docker for containerization and deployment.
