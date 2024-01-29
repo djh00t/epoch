@@ -30,22 +30,24 @@ class FileSystemSessionInterface(SessionInterface):
             sid = self._generate_sid()
             session_data = self.cache.get(sid)
             if session_data is None:
+                session_data = Session(initial={}, sid=sid)
                 session_data = {}
                 self.cache.set(sid, session_data)
             return session_data
-        return self.cache.get(sid)
+        stored_data = self.cache.get(sid)
+        if stored_data:
+            return Session(initial=stored_data, sid=sid)
+        return Session(initial={}, sid=sid)
 
     def save_session(self, app, session, response):
         sid = session.get('sid')
+        sid = session.sid
         if not session:
             if sid:
                 self.cache.delete(sid)
                 response.delete_cookie(app.session_cookie_name)
             return
-        if not sid:
-            sid = self._generate_sid()
-            session['sid'] = sid
-        session.permanent = session.get('permanent', app.permanent_session_lifetime)
+        session.permanent = session.get('permanent', False)
         cookie_exp = self.get_expiration_time(app, session)
         self.cache.set(sid, dict(session), timeout=app.permanent_session_lifetime)
         response.set_cookie(app.session_cookie_name, sid, expires=cookie_exp, httponly=True, domain=self.get_cookie_domain(app))
