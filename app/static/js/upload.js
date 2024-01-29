@@ -8,7 +8,7 @@ function generateChecksum(file, callback) {
     reader.readAsArrayBuffer(file);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const parallelUploadsInput = document.getElementById('parallel-uploads');
     const fileInput = document.getElementById('file-input');
     const fileListBody = document.getElementById('file-list-body');
@@ -18,14 +18,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // TODO: Implement logic to handle parallel uploads configuration
     });
 
-    const fileInput = document.getElementById('file-input');
-    const fileListBody = document.getElementById('file-list-body');
+    // Removed duplicate declarations
 
     fileInput.addEventListener('change', function() {
         fileListBody.innerHTML = ''; // Clear the current file list
 
         Array.from(fileInput.files).forEach((file, index) => {
-        Array.from(fileInput.files).forEach((file, index) => {
+        Array.from(fileInput.files).forEach((file) => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${file.name}</td>
@@ -36,17 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><progress value="0" max="100"></progress></td>
             `;
             fileListBody.appendChild(row);
-            createThumbnail(file, function(thumbnailDataUrl) {
-                // Add the thumbnail data URL to the row
-                const thumbnailCell = row.querySelector('td:nth-child(3)');
-                thumbnailCell.innerHTML = `<img src="${thumbnailDataUrl}" class="thumbnail">`;
-            });
             generateChecksum(file, function(checksum) {
                 // Add the checksum to the row or store it in a way to be used during upload
                 row.dataset.checksum = checksum;
             });
         });
     });
+
         createThumbnail(file, function(thumbnailDataUrl) {
             // Add the thumbnail data URL to the row
             const thumbnailCell = row.querySelector('td:nth-child(3)');
@@ -64,7 +59,71 @@ document.addEventListener('DOMContentLoaded', function() {
         uploadFiles(fileInput.files);
     });
 
-    function uploadFiles(files) {
+    function createThumbnail(file, callback) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.onload = function () {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                const maxW = 100;
+                const maxH = 100;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxW) {
+                        height *= maxW / width;
+                        width = maxW;
+                    }
+                } else {
+                    if (height > maxH) {
+                        width *= maxH / height;
+                        height = maxH;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                callback(canvas.toDataURL("image/jpeg", 0.7));
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Modify the existing file input change event listener to create thumbnails
+    fileInput.addEventListener('change', function () {
+        fileListBody.innerHTML = ''; // Clear the current file list
+
+        Array.from(fileInput.files).forEach((file, index) => {
+            createThumbnail(file, function (thumbnailDataUrl) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${thumbnailDataUrl}" class="thumbnail"></td>
+                    <td>${file.name}</td>
+                    <td>${file.size} bytes</td>
+                    <td>Ready to upload</td>
+                    <td><progress id="progress_${index}" value="0" max="100"></progress></td>
+                `;
+                fileListBody.appendChild(row);
+                generateChecksum(file, function (checksum) {
+                    // Add the checksum to the row or store it in a way to be used during upload
+                    row.dataset.checksum = checksum;
+                });
+            });
+        });
+    });
+
+    // Removed the duplicate event listener for 'change' on fileInput
+
+    uploadForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+        uploadFiles(fileInput.files);
+    });
+
+    // Rest of the existing code...
+});
         const formData = new FormData();
         Array.from(files).forEach(file => {
             formData.append('files[]', file, file.name);
@@ -166,6 +225,7 @@ fileInput.addEventListener('change', function() {
             });
         });
     });
+
         createThumbnail(file, function(thumbnailDataUrl) {
             // Add the thumbnail data URL to the row
             const thumbnailCell = row.querySelector('td:nth-child(3)');
