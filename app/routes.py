@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask import jsonify, request, redirect, url_for, render_template
 from . import create_app, secure_filename
-from PIL import Image  # This line will be replaced with the correct import
+from PIL import Image
 import io
 import base64
 import os
