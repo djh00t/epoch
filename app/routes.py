@@ -1,5 +1,6 @@
 from flask import jsonify
 from flask import jsonify, request, redirect, url_for, render_template
+from time import time
 from . import secure_filename
 from PIL import Image
 import json
@@ -34,6 +35,7 @@ def init_app(app):
 
     @app.route('/upload', methods=['GET', 'POST'])
     def upload():
+        start_time = time()
         if request.method == 'POST':
             # Ensure the session has a unique identifier
             if 'session_id' not in session:
@@ -127,4 +129,5 @@ def init_app(app):
                 file_list = []
             session_id = session.get('session_id', str(uuid4()))
         session['session_id'] = session_id  # Ensure the session has a unique identifier
-        return render_template('upload.html', file_list=file_list, session_id=session_id)
+        render_time = time() - start_time
+        return render_template('upload.html', file_list=file_list, session_id=session_id, render_time=render_time)
