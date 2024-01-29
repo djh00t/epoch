@@ -29,11 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Logic to handle the form submission and file upload...
     });
 
-    // Additional code that depends on uploadForm...
-});
-
-        Array.from(fileInput.files).forEach((file) => {
-        Array.from(fileInput.files).forEach((file) => {
+    Array.from(fileInput.files).forEach((file) => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${file.name}</td>
