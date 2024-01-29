@@ -16,7 +16,9 @@ def init_app(app):
             for file in uploaded_files:
                 if file:
                     filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    upload_path = app.config['UPLOAD_FOLDER']
+                    os.makedirs(upload_path, exist_ok=True)
+                    file.save(os.path.join(upload_path, filename))
             return redirect(url_for('upload'))
         return render_template('upload.html')
 
