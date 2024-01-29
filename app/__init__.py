@@ -1,6 +1,6 @@
 from flask import Flask
 from werkzeug.utils import secure_filename
-from flask_session import Session
+from flask import session
 import os
 from uuid import uuid4
 
@@ -16,9 +16,7 @@ def create_app():
     app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/upload/'
 
     # Configure session to use filesystem instead of signed cookies
-    app.config['SESSION_TYPE'] = 'filesystem'
-    app.config['SESSION_FILE_DIR'] = os.path.join(app.instance_path, 'session_files')
-    Session(app)
+    app.secret_key = os.urandom(24)
 
     # Include our Routes
     from . import routes
