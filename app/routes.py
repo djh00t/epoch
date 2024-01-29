@@ -88,7 +88,7 @@ def init_app(app):
                         return thumbnail_filename
 
                     file_path = os.path.join(upload_path, filename)
-                    file.save(file_path)
+                    uploaded_file.save(file_path)
 
                     # Generate a low-resolution thumbnail
                     thumbnail_filename = create_thumbnail(file_path)
