@@ -31,7 +31,7 @@ class FileSystemSessionInterface(SessionInterface):
             session_data = self.cache.get(sid)
             if session_data is None:
                 session_data = Session(initial={}, sid=sid)
-                session_data = {}
+                session_data = Session(initial={}, sid=sid)
                 self.cache.set(sid, session_data)
             return session_data
         stored_data = self.cache.get(sid)
@@ -40,7 +40,7 @@ class FileSystemSessionInterface(SessionInterface):
         return Session(initial={}, sid=sid)
 
     def save_session(self, app, session, response):
-        sid = session.get('sid')
+        sid = session.sid
         sid = session.sid
         if not session:
             if sid:
