@@ -6,14 +6,11 @@ from uuid import uuid4
 
 def create_app():
     app = Flask(__name__)
-    app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Allow up to 32 megabytes per upload session
     app.config['DEBUG'] = True  # Enable debug mode to automatically reload on code changes
 
     # Configure the image upload destination
     app.config['UPLOAD_FOLDER'] = 'uploads'
-    app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # Allow up to 1024 megabytes per upload session
-
-    app.config['UPLOAD_FOLDER'] = 'uploads/images'  # configure the image upload destination
+    app.config['MAX_CONTENT_LENGTH'] = 10240 * 1024 * 1024  # Allow up to 1024 megabytes per upload session
 
     # Additional configuration can go here
     app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(app.instance_path, 'uploads')
