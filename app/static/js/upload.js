@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const parallelUploadsInput = document.getElementById('parallel-uploads');
+    const fileInput = document.getElementById('file-input');
+    const fileListBody = document.getElementById('file-list-body');
+    const uploadForm = document.querySelector('form');
 
     parallelUploadsInput.addEventListener('change', function() {
         // TODO: Implement logic to handle parallel uploads configuration
@@ -12,15 +15,54 @@ document.addEventListener('DOMContentLoaded', function() {
         fileListBody.innerHTML = ''; // Clear the current file list
 
         Array.from(fileInput.files).forEach(file => {
+        Array.from(fileInput.files).forEach((file, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${file.name}</td>
                 <td>${file.size} bytes</td>
                 <td>Not available</td>
                 <td>Ready to upload</td>
+                <td><progress id="progress_${index}" value="0" max="100"></progress></td>
                 <td><progress value="0" max="100"></progress></td>
             `;
             fileListBody.appendChild(row);
         });
     });
+
+    uploadForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        uploadFiles(fileInput.files);
+    });
+
+    function uploadFiles(files) {
+        const formData = new FormData();
+        Array.from(files).forEach(file => {
+            formData.append('files[]', file, file.name);
+        });
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', uploadForm.action, true);
+
+        xhr.upload.onprogress = function(event) {
+            if (event.lengthComputable) {
+                const percentComplete = (event.loaded / event.total) * 100;
+                Array.from(files).forEach((file, index) => {
+                    const progress = document.getElementById(`progress_${index}`);
+                    progress.value = percentComplete;
+                });
+            }
+        };
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log('Upload complete!');
+                // Handle successful upload here
+            } else {
+                console.error('Upload failed.');
+                // Handle upload failure here
+            }
+        };
+
+        xhr.send(formData);
+    }
 });

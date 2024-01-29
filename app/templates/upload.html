@@ -12,7 +12,7 @@
         <label for="parallel-uploads">Parallel Uploads:</label>
         <input type="number" id="parallel-uploads" name="parallel-uploads" min="1" max="10" value="3">
         <input type="file" id="file-input" name="files" multiple onchange="updateFileList()">
-        <input type="submit" value="Upload">
+        <button type="submit">Upload</button>
     </form>
     <div id="file-list">
         <table>
@@ -27,6 +27,9 @@
             </thead>
             <tbody id="file-list-body">
             <!-- File list will be populated here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
             <tbody>
         <ul>
             {% for file in file_list %}
