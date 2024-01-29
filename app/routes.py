@@ -1,12 +1,12 @@
-from flask import jsonify
+from flask import jsonify, current_app as app
 from flask import jsonify, request, redirect, url_for, render_template
-from . import create_app, secure_filename
+from . import secure_filename
 from PIL import Image
 import json
 import io
 import base64
 import os
-from uuid import uuid4
+from flask import session, current_app as app
 from flask import session
 
 FILE_STATUS = {
