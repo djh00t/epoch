@@ -11,7 +11,7 @@ def create_app():
 
     # Configure the image upload destination
     app.config['UPLOAD_FOLDER'] = 'uploads'
-    app.config['MAX_CONTENT_LENGTH'] = 10240 * 1024 * 1024  # Allow up to 1024 megabytes per upload session
+    app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # Allow up to 1024 megabytes per upload session
 
     # Additional configuration can go here
     app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(app.instance_path, 'uploads')
