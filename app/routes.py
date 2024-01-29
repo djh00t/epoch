@@ -80,8 +80,8 @@ def init_app(app):
             with open(metadata_file_path, 'w') as metadata_file:
                 json.dump(file_list, metadata_file)
 
-            # Return a JSON response instead of redirecting
-            return jsonify({'status': 'success', 'file_list': file_list})
+            # Render the upload template with the file list after files are uploaded
+            return render_template('upload.html', file_list=file_list)
         else:
             # Retrieve the file list from the metadata file
             upload_path = os.path.join(app.config['UPLOAD_FOLDER'], session.get('session_id', ''))
@@ -92,5 +92,3 @@ def init_app(app):
             else:
                 file_list = []
             return render_template('upload.html', file_list=file_list)
-
-

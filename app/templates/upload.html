@@ -30,6 +30,30 @@
             </tbody>
         </table>
     </div>
+    <div id="file-list-server">
+        <table>
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>File Size</th>
+                    <th>EXIF Date</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in file_list %}
+                    <tr>
+                        <td>{{ file.name }}</td>
+                        <td>{{ file.size }} bytes</td>
+                        <td>{{ file.exif_date }}</td>
+                        <td>{{ file.status }}</td>
+                        <td><progress value="{{ file.progress }}" max="100"></progress></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
             <tbody>
         <ul>
             {% for file in file_list %}
