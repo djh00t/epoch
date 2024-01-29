@@ -21,6 +21,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     fileInput.addEventListener('change', function() {
         fileListBody.innerHTML = ''; // Clear the current file list
+        // Existing code for handling file input change...
+    });
+
+    uploadForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        // Logic to handle the form submission and file upload...
+    });
+
+    // Additional code that depends on uploadForm...
+});
 
         Array.from(fileInput.files).forEach((file) => {
         Array.from(fileInput.files).forEach((file) => {
