@@ -1,4 +1,4 @@
-from flask import jsonify, current_app as app
+from flask import jsonify
 from flask import jsonify, request, redirect, url_for, render_template
 from . import secure_filename
 from PIL import Image
@@ -6,7 +6,8 @@ import json
 import io
 import base64
 import os
-from flask import session, current_app as app
+from flask import session
+from uuid import uuid4
 from flask import session
 
 FILE_STATUS = {
@@ -18,14 +19,15 @@ FILE_STATUS = {
     'FAILED': 'Failed'
 }
 
-@app.route('/logout')
-def logout():
-    # Clear the session to log the user out
-    session.clear()
-    # Redirect to the main page or login page
-    return redirect(url_for('upload'))
 
 def init_app(app):
+    @app.route('/logout')
+    def logout():
+        # Clear the session to log the user out
+        session.clear()
+        # Redirect to the main page or login page
+        return redirect(url_for('upload'))
+
     @app.route('/health', methods=['GET'])
     def health_check():
         return jsonify({"status": "UP"}), 200
