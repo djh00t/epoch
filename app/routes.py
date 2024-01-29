@@ -58,6 +58,7 @@ def init_app(app):
                         'progress': 100,  # Placeholder for progress
                         'thumbnail': thumbnail
                     })
+            # The line above is removed as it is a duplicate and incorrectly indented
 
             return redirect(url_for('upload'))
         else:
