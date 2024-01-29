@@ -2,6 +2,7 @@ from flask import Flask
 from werkzeug.utils import secure_filename
 from flask_session import Session
 import os
+from uuid import uuid4
 
 def create_app():
     app = Flask(__name__)
@@ -19,6 +20,7 @@ def create_app():
 
     # Configure session to use filesystem instead of signed cookies
     app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['SESSION_FILE_DIR'] = os.path.join(app.instance_path, 'session_files')
     Session(app)
 
     # Include our Routes
