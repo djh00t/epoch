@@ -64,43 +64,39 @@ def init_app(app):
             new_files_added = False
             existing_filenames = {file['name'] for file in file_list}
             for uploaded_file in uploaded_files:
-                if uploaded_file:
-                    filename = secure_filename(uploaded_file.filename)
-                    logging.debug(f"Received file: {filename}")
-                    if filename in existing_filenames:
-                        logging.debug(f"File {filename} already exists. Skipping.")
-                        continue  # Skip files with conflicting names
-
-                    file_path = os.path.join(upload_path, filename)
-                    file_checksum = request.form.get(f'{filename}-checksum')
-                    file_checksum = request.form.get(f'{filename}-checksum')
-                    try:
-                        uploaded_file.save(file_path)
-                        logging.debug(f"File {filename} saved successfully.")
-                        # Verify the checksum
-                        with open(file_path, 'rb') as f:
-                            file_data = f.read()
-                            actual_checksum = hashlib.md5(file_data).hexdigest()
-                        if actual_checksum != file_checksum:
-                            os.remove(file_path)  # Remove the file if checksum doesn't match
-                            continue  # Skip this file and continue with the next one
-                        logging.debug(f"Checksum verified for file {filename}.")
-                    except IOError as e:
-                        logging.error(f"Failed to save file {filename}: {e}")
-                        app.logger.error(f"Failed to save file {filename}: {e}")
+                filename = secure_filename(uploaded_file.filename)
+                if not filename or filename in existing_filenames:
+                    logging.debug(f"Skipping file: {filename}")
+                    continue  # Skip empty filenames or files with conflicting names
+                file_path = os.path.join(upload_path, filename)
+                file_checksum = request.form.get(f'{filename}-checksum')
+                try:
+                    uploaded_file.save(file_path)
+                    logging.debug(f"File {filename} saved successfully.")
+                    # Verify the checksum
+                    with open(file_path, 'rb') as f:
+                        file_data = f.read()
+                        actual_checksum = hashlib.md5(file_data).hexdigest()
+                    if actual_checksum != file_checksum:
+                        os.remove(file_path)  # Remove the file if checksum doesn't match
+                        logging.debug(f"Checksum mismatch for file {filename}.")
                         continue  # Skip this file and continue with the next one
-                        # Verify the checksum
-                        with open(file_path, 'rb') as f:
-                            file_data = f.read()
-                            actual_checksum = hashlib.md5(file_data).hexdigest()
-                        if actual_checksum != file_checksum:
-                            os.remove(file_path)  # Remove the file if checksum doesn't match
-                            continue  # Skip this file and continue with the next one
-                        logging.debug(f"Checksum verified for file {filename}.")
-                    except IOError as e:
-                        logging.error(f"Failed to save file {filename}: {e}")
-                        app.logger.error(f"Failed to save file {filename}: {e}")
-                        continue  # Skip this file and continue with the next one
+                    # Generate a low-resolution thumbnail
+                    thumbnail_filename = create_thumbnail(file_path)
+                    # Add file metadata to the session file list
+                    file_list.append({
+                        'name': filename,
+                        'size': os.path.getsize(file_path),
+                        'exif_date': '',  # Placeholder for EXIF date
+                        'status': FILE_STATUS['OK'],
+                        'progress': 100,  # Placeholder for progress
+                        'thumbnail': thumbnail_filename,
+                        'checksum': file_checksum
+                    })
+                    new_files_added = True
+                except IOError as e:
+                    logging.error(f"Failed to save file {filename}: {e}")
+                    continue  # Skip this file and continue with the next one
 
                     # Add file metadata to the session file list
                     file_list.append({
