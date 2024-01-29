@@ -8,11 +8,12 @@ function generateChecksum(file, callback) {
     reader.readAsArrayBuffer(file);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadForm = document.querySelector('form');
+
     const parallelUploadsInput = document.getElementById('parallel-uploads');
     const fileInput = document.getElementById('file-input');
     const fileListBody = document.getElementById('file-list-body');
-    const uploadForm = document.querySelector('form');
 
     parallelUploadsInput.addEventListener('change', function() {
         // TODO: Implement logic to handle parallel uploads configuration
