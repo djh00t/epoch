@@ -48,7 +48,7 @@ def create_app():
     app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/upload/'
 
     # Set the secret key for session signing
-    app.config['SECRET_KEY'] = os.urandom(24)
+    app.config['SECRET_KEY'] = 'your-secret-key-here'
 
     # Configure session to use filesystem instead of signed cookies
     app.config['SESSION_TYPE'] = 'filesystem'
