@@ -48,7 +48,7 @@ def create_app():
     app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/upload/'
 
     # Set the secret key for session signing
-    app.config['SECRET_KEY'] = 'your-secret-key-here'
+    app.config['SECRET_KEY'] = '38CF8089-7545-4D21-A169-BB1871F0A633'
 
     # Configure session to use filesystem instead of signed cookies
     app.config['SESSION_TYPE'] = 'filesystem'
