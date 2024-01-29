@@ -4,7 +4,7 @@ import os
 
 def create_app():
     app = Flask(__name__)
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Allow up to 16 megabytes file uploads
+    app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Allow up to 32 megabytes file uploads
 
     app.config['UPLOAD_FOLDER'] = 'uploads/images'  # configure the image upload destination
 
