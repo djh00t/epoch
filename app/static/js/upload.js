@@ -77,3 +77,54 @@ document.addEventListener('DOMContentLoaded', function() {
         xhr.send(formData);
     }
 });
+function createThumbnail(file, callback) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const maxW = 100;
+            const maxH = 100;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > maxW) {
+                    height *= maxW / width;
+                    width = maxW;
+                }
+            } else {
+                if (height > maxH) {
+                    width *= maxH / height;
+                    height = maxH;
+                }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            callback(canvas.toDataURL("image/jpeg", 0.7));
+        };
+    };
+    reader.readAsDataURL(file);
+}
+
+// Modify the existing file input change event listener to create thumbnails
+fileInput.addEventListener('change', function() {
+    fileListBody.innerHTML = ''; // Clear the current file list
+
+    Array.from(fileInput.files).forEach((file, index) => {
+        createThumbnail(file, function(thumbnailDataUrl) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${file.name}</td>
+                <td>${file.size} bytes</td>
+                <td><img src="${thumbnailDataUrl}" class="thumbnail"></td>
+                <td>Ready to upload</td>
+                <td><progress value="0" max="100"></progress></td>
+            `;
+            fileListBody.appendChild(row);
+        });
+    });
+});
