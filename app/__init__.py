@@ -7,6 +7,7 @@ from uuid import uuid4
 def create_app():
     app = Flask(__name__)
     app.config['DEBUG'] = True  # Enable debug mode to automatically reload on code changes
+    app.run(debug=True)
 
     # Configure the image upload destination
     app.config['UPLOAD_FOLDER'] = 'uploads'
