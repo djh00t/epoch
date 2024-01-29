@@ -60,7 +60,7 @@ def init_app(app):
                 file_list = json.load(metadata_file)
 
             # Get the uploaded files list
-            uploaded_files = request.files.getlist("files[]")
+            uploaded_files = request.files.getlist("file")
             new_files_added = False
             existing_filenames = {file['name'] for file in file_list}
             for uploaded_file in uploaded_files:
@@ -69,7 +69,7 @@ def init_app(app):
                     logging.debug(f"Skipping file: {filename}")
                     continue  # Skip empty filenames or files with conflicting names
                 file_path = os.path.join(upload_path, filename)
-                file_checksum = request.form.get('checksum')
+                file_checksum = request.form.get(f'checksum_{filename}')
                 try:
                     uploaded_file.save(file_path)
                     logging.debug(f"File {filename} saved successfully.")
