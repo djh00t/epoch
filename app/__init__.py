@@ -1,5 +1,7 @@
 from flask import Flask
 from werkzeug.utils import secure_filename
+from flask.sessions import SecureCookieSessionInterface
+from cachelib.file import FileSystemCache
 import os
 from uuid import uuid4
 
@@ -16,6 +18,12 @@ def create_app():
 
     # Configure session to use filesystem instead of signed cookies
     app.secret_key = os.urandom(24)
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['SESSION_FILE_DIR'] = os.path.join(app.instance_path, 'flask_session')
+    app.config['SESSION_FILE_THRESHOLD'] = 500
+    app.config['SESSION_FILE_MODE'] = 600
+    app.session_interface = SecureCookieSessionInterface()
+    app.session_interface.session_class = FileSystemCache(app.config['SESSION_FILE_DIR'], threshold=app.config['SESSION_FILE_THRESHOLD'], mode=app.config['SESSION_FILE_MODE'])
 
     # Include our Routes
     from . import routes
