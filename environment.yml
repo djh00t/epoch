@@ -6,3 +6,4 @@ dependencies:
   - flask=2.0.2
   - werkzeug>=2.0
   - python-magic=0.4.24
+  - flask_session
