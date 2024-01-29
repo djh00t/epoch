@@ -11,14 +11,24 @@
             top: 10px;
             right: 10px;
         }
-        footer {
-            color: grey;
+        #footer-container {
+            font-size: 0.5em;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
             text-align: center;
-            padding: 10px 0;
+        }
+        .content {
+            min-height: calc(100vh - 40px);
+        }
+        footer {
+            margin-top: 1em;
+            color: grey;
         }
     </style>
 </head>
 <body>
+    <div class="content">
     <button id="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
     <h1>Upload Files</h1>
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
@@ -81,9 +91,12 @@
     }
     </script>
     <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
-    <footer>
-        Session ID: {{ session_id }}<br>
-        Page rendered in {{ render_time }} seconds
-    </footer>
+    </div>
+    <div id="footer-container">
+        <footer>
+            Session ID: {{ session_id }}<br>
+            Page rendered in {{ render_time }} seconds
+        </footer>
+    </div>
 </body>
 </html>
