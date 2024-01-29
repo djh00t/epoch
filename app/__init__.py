@@ -1,9 +1,14 @@
 from flask import Flask
 from werkzeug.utils import secure_filename
+from flask_session import Session
 import os
 
 def create_app():
     app = Flask(__name__)
+    app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Allow up to 32 megabytes per upload session
+
+    # Configure the image upload destination
+    app.config['UPLOAD_FOLDER'] = 'uploads'
     app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024  # Allow up to 1024 megabytes per upload session
 
     app.config['UPLOAD_FOLDER'] = 'uploads/images'  # configure the image upload destination
@@ -11,6 +16,10 @@ def create_app():
     # Additional configuration can go here
     app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(app.instance_path, 'uploads')
     app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/uploads/'
+
+    # Configure session to use filesystem instead of signed cookies
+    app.config['SESSION_TYPE'] = 'filesystem'
+    Session(app)
 
     # Include our Routes
     from . import routes
