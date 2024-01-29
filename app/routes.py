@@ -113,7 +113,9 @@ def init_app(app):
                 return redirect(url_for('upload'))
             else:
                 # If no new files were added, render the template with the existing file list
-                return render_template('upload.html', file_list=file_list)
+                session_id = session.get('session_id', str(uuid4()))
+        session['session_id'] = session_id  # Ensure the session has a unique identifier
+        return render_template('upload.html', file_list=file_list, session_id=session_id)
 
             # Redirect to the GET method to display the file list
             return redirect(url_for('upload'))
@@ -126,4 +128,6 @@ def init_app(app):
                     file_list = json.load(metadata_file)
             else:
                 file_list = []
-            return render_template('upload.html', file_list=file_list)
+            session_id = session.get('session_id', str(uuid4()))
+        session['session_id'] = session_id  # Ensure the session has a unique identifier
+        return render_template('upload.html', file_list=file_list, session_id=session_id)
