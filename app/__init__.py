@@ -13,7 +13,7 @@ class FileSystemSessionInterface(SessionInterface):
                                      mode=app.config['SESSION_FILE_MODE'])
 
     def open_session(self, app, request):
-        sid = request.cookies.get(app.session_cookie_name)
+        sid = request.cookies.get(app.session_interface.session_cookie_name)
         if not sid:
             sid = self._generate_sid()
             return self.cache.get(sid) or self.cache.new()
