@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fileInput.addEventListener('change', function() {
         fileListBody.innerHTML = ''; // Clear the current file list
 
-        Array.from(fileInput.files).forEach((file, index) => {
+        Array.from(fileInput.files).forEach((file) => {
         Array.from(fileInput.files).forEach((file) => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -42,6 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    uploadForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        uploadFiles(fileInput.files);
+    });
+
+    // Rest of the existing code...
         createThumbnail(file, function(thumbnailDataUrl) {
             // Add the thumbnail data URL to the row
             const thumbnailCell = row.querySelector('td:nth-child(3)');
