@@ -30,13 +30,15 @@ class FileSystemSessionInterface(SessionInterface):
 
     def save_session(self, app, session, response):
         domain = self.get_cookie_domain(app)
-        if not session:
-            self.cache.delete(session.sid)
+        sid = request.cookies.get(app.session_interface.session_cookie_name)
+        if not session or not sid:
+            self.cache.delete(sid)
             if session.modified:
                 response.delete_cookie(app.session_cookie_name, domain=domain)
             return
         cookie_exp = self.get_expiration_time(app, session)
-        val = self.cache.set(session.sid, dict(session), timeout=app.permanent_session_lifetime)
+        val = self.cache.set(sid, dict(session), timeout=app.permanent_session_lifetime)
+        response.set_cookie(app.session_cookie_name, sid,
         response.set_cookie(app.session_cookie_name, session.sid,
                             expires=cookie_exp, httponly=True, domain=domain)
 
