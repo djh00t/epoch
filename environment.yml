@@ -8,4 +8,5 @@ dependencies:
   - python-magic=0.4.24
   - pip
   - pip:
-    - flask_session
+    - Flask-Session
+    - Flask-Session
