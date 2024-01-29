@@ -15,18 +15,29 @@
         <input type="submit" value="Upload">
     </form>
     <div id="file-list">
+        <table>
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>File Size</th>
+                    <th>EXIF Date</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody>
         <ul>
             {% for file in file_list %}
-            <li>
-                <img src="data:image/jpeg;base64,{{ file.thumbnail }}" alt="Thumbnail">
-                <span>{{ file.name }}</span>
-                <span>{{ file.size }} bytes</span>
-                <span>{{ file.exif_date }}</span>
-                <span>{{ file.status }}</span>
-                <progress value="{{ file.progress }}" max="100"></progress>
-            </li>
+                <tr>
+                    <td>{{ file.name }}</td>
+                    <td>{{ file.size }} bytes</td>
+                    <td>{{ file.exif_date }}</td>
+                    <td>{{ file.status }}</td>
+                    <td><progress value="{{ file.progress }}" max="100"></progress></td>
+                </tr>
             {% endfor %}
-        </ul>
+            </tbody>
+        </table>
     </div>
     <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 </body>
