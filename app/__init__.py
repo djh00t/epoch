@@ -1,6 +1,6 @@
 from flask import Flask
 from werkzeug.utils import secure_filename
-from flask import session
+from flask.sessions import FilesystemSessionInterface
 import os
 from uuid import uuid4
 
@@ -17,6 +17,7 @@ def create_app():
 
     # Configure session to use filesystem instead of signed cookies
     app.secret_key = os.urandom(24)
+    app.session_interface = FilesystemSessionInterface()
 
     # Include our Routes
     from . import routes
