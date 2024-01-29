@@ -73,5 +73,4 @@ def init_app(app):
             file_list = session.get('file_list', [])
             return render_template('upload.html', file_list=file_list)
 
-    return render_template('upload.html')
 
