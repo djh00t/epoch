@@ -44,9 +44,12 @@ def init_app(app):
 
             # Get the uploaded files list
             uploaded_files = request.files.getlist("files")
+            existing_filenames = {file['name'] for file in file_list}
             for file in uploaded_files:
                 if file:
                     filename = secure_filename(file.filename)
+                if filename in existing_filenames:
+                    continue  # Skip files with conflicting names
                     # Create a session-specific subdirectory in the upload path
                     def create_thumbnail(file_path):
                         with Image.open(file_path) as img:
