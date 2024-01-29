@@ -64,7 +64,11 @@ def init_app(app):
                         continue  # Skip files with conflicting names
 
                     file_path = os.path.join(upload_path, filename)
-                    uploaded_file.save(file_path)
+                    try:
+                        uploaded_file.save(file_path)
+                    except IOError as e:
+                        app.logger.error(f"Failed to save file {filename}: {e}")
+                        continue  # Skip this file and continue with the next one
 
                     # Add file metadata to the session file list
                     file_list.append({
@@ -90,7 +94,11 @@ def init_app(app):
                         return thumbnail_filename
 
                     file_path = os.path.join(upload_path, filename)
-                    uploaded_file.save(file_path)
+                    try:
+                        uploaded_file.save(file_path)
+                    except IOError as e:
+                        app.logger.error(f"Failed to save file {filename}: {e}")
+                        continue  # Skip this file and continue with the next one
 
                     # Generate a low-resolution thumbnail
                     thumbnail_filename = create_thumbnail(file_path)
