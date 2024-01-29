@@ -9,8 +9,25 @@
 <body>
     <h1>Upload Files</h1>
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+        <label for="parallel-uploads">Parallel Uploads:</label>
+        <input type="number" id="parallel-uploads" name="parallel-uploads" min="1" max="10" value="3">
         <input type="file" name="files" multiple>
         <input type="submit" value="Upload">
     </form>
+    <div id="file-list">
+        <ul>
+            {% for file in file_list %}
+            <li>
+                <img src="data:image/jpeg;base64,{{ file.thumbnail }}" alt="Thumbnail">
+                <span>{{ file.name }}</span>
+                <span>{{ file.size }} bytes</span>
+                <span>{{ file.exif_date }}</span>
+                <span>{{ file.status }}</span>
+                <progress value="{{ file.progress }}" max="100"></progress>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 </body>
 </html>
