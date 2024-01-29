@@ -1,9 +1,38 @@
 from flask import Flask
 from werkzeug.utils import secure_filename
 from flask.sessions import SecureCookieSessionInterface
+from flask.sessions import SessionInterface, SessionMixin
 from cachelib.file import FileSystemCache
 import os
 from uuid import uuid4
+
+class FileSystemSessionInterface(SessionInterface):
+    def __init__(self, app):
+        self.cache = FileSystemCache(app.config['SESSION_FILE_DIR'],
+                                     threshold=app.config['SESSION_FILE_THRESHOLD'],
+                                     mode=app.config['SESSION_FILE_MODE'])
+
+    def open_session(self, app, request):
+        sid = request.cookies.get(app.session_cookie_name)
+        if not sid:
+            sid = self._generate_sid()
+            return self.cache.get(sid) or self.cache.new()
+        return self.cache.get(sid)
+
+    def save_session(self, app, session, response):
+        domain = self.get_cookie_domain(app)
+        if not session:
+            self.cache.delete(session.sid)
+            if session.modified:
+                response.delete_cookie(app.session_cookie_name, domain=domain)
+            return
+        cookie_exp = self.get_expiration_time(app, session)
+        val = self.cache.set(session.sid, dict(session), timeout=app.permanent_session_lifetime)
+        response.set_cookie(app.session_cookie_name, session.sid,
+                            expires=cookie_exp, httponly=True, domain=domain)
+
+    def _generate_sid(self):
+        return str(uuid4())
 
 def create_app():
     app = Flask(__name__)
@@ -22,8 +51,7 @@ def create_app():
     app.config['SESSION_FILE_DIR'] = os.path.join(app.instance_path, 'flask_session')
     app.config['SESSION_FILE_THRESHOLD'] = 500
     app.config['SESSION_FILE_MODE'] = 600
-    app.session_interface = SecureCookieSessionInterface()
-    app.session_interface.session_class = FileSystemCache(app.config['SESSION_FILE_DIR'], threshold=app.config['SESSION_FILE_THRESHOLD'], mode=app.config['SESSION_FILE_MODE'])
+    app.session_interface = FileSystemSessionInterface(app)
 
     # Include our Routes
     from . import routes
