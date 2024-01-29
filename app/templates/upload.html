@@ -37,7 +37,7 @@
     <script>
     function updateFileList() {
         const input = document.getElementById('file-input');
-        const fileListBody = document.getElementById('file-list-body');
+        const fileListBody = document.querySelector('#file-list-server tbody');
 
         // Clear the current file list
         fileListBody.innerHTML = '';
