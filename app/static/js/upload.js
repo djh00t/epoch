@@ -26,6 +26,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><progress value="0" max="100"></progress></td>
             `;
             fileListBody.appendChild(row);
+        createThumbnail(file, function(thumbnailDataUrl) {
+            // Add the thumbnail data URL to the row
+            const thumbnailCell = row.querySelector('td:nth-child(3)');
+            thumbnailCell.innerHTML = `<img src="${thumbnailDataUrl}" class="thumbnail">`;
+        });
+        generateChecksum(file, function(checksum) {
+            // Add the checksum to the row or store it in a way to be used during upload
+            row.dataset.checksum = checksum;
+        });
         });
     });
 
@@ -125,6 +134,15 @@ fileInput.addEventListener('change', function() {
                 <td><progress value="0" max="100"></progress></td>
             `;
             fileListBody.appendChild(row);
+        createThumbnail(file, function(thumbnailDataUrl) {
+            // Add the thumbnail data URL to the row
+            const thumbnailCell = row.querySelector('td:nth-child(3)');
+            thumbnailCell.innerHTML = `<img src="${thumbnailDataUrl}" class="thumbnail">`;
+        });
+        generateChecksum(file, function(checksum) {
+            // Add the checksum to the row or store it in a way to be used during upload
+            row.dataset.checksum = checksum;
+        });
         });
     });
 });
