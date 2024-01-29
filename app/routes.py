@@ -146,18 +146,33 @@ def init_app(app):
                     })
                     new_files_added = True
 
-            # Save the updated file list to the metadata file
-            with open(metadata_file_path, 'w') as metadata_file:
-                json.dump(file_list, metadata_file)
+            # Generate a low-resolution thumbnail
+            thumbnail_filename = create_thumbnail(file_path)
 
-            if new_files_added:
-                # Redirect to the GET method to display the updated file list
-                return redirect(url_for('upload'))
-            else:
-                # If no new files were added, render the template with the existing file list
-                session_id = session.get('session_id', str(uuid4()))
-                session['session_id'] = session_id  # Ensure the session has a unique identifier
-                render_time = time() - start_time
+            # Add file metadata to the session file list
+            file_list.append({
+                'name': filename,
+                'size': os.path.getsize(file_path),
+                'exif_date': '',  # Placeholder for EXIF date
+                'status': FILE_STATUS['OK'],
+                'progress': 100,  # Placeholder for progress
+                'thumbnail': thumbnail_filename,
+                'checksum': file_checksum
+            })
+            new_files_added = True
+
+    # Save the updated file list to the metadata file
+    with open(metadata_file_path, 'w') as metadata_file:
+        json.dump(file_list, metadata_file)
+
+    if new_files_added:
+        # Redirect to the GET method to display the updated file list
+        return redirect(url_for('upload'))
+    else:
+        # If no new files were added, render the template with the existing file list
+        session_id = session.get('session_id', str(uuid4()))
+        session['session_id'] = session_id  # Ensure the session has a unique identifier
+        render_time = time() - start_time
         return render_template('upload.html', file_list=file_list, session_id=session_id, render_time=render_time)
         else:
             # Retrieve the file list from the metadata file
