@@ -5,8 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        #logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        footer {
+            color: grey;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
 </head>
 <body>
+    <button id="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
     <h1>Upload Files</h1>
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
         <label for="parallel-uploads">Parallel Uploads:</label>
@@ -15,6 +28,8 @@
         <button type="submit">Upload</button>
     </form>
     <div id="file-list">
+    <!-- Existing code for file list -->
+    </div>
     <div id="file-list-server">
         <table>
             <thead>
@@ -66,5 +81,9 @@
     }
     </script>
     <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+    <footer>
+        Session ID: {{ session_id }}<br>
+        Page rendered in {{ render_time }} seconds
+    </footer>
 </body>
 </html>
