@@ -65,8 +65,19 @@ def init_app(app):
 
                     file_path = os.path.join(upload_path, filename)
                     file_checksum = request.form.get(f'{filename}-checksum')
+                    file_checksum = request.form.get(f'{filename}-checksum')
                     try:
                         uploaded_file.save(file_path)
+                        # Verify the checksum
+                        with open(file_path, 'rb') as f:
+                            file_data = f.read()
+                            actual_checksum = hashlib.md5(file_data).hexdigest()
+                        if actual_checksum != file_checksum:
+                            os.remove(file_path)  # Remove the file if checksum doesn't match
+                            continue  # Skip this file and continue with the next one
+                    except IOError as e:
+                        app.logger.error(f"Failed to save file {filename}: {e}")
+                        continue  # Skip this file and continue with the next one
                         # Verify the checksum
                         with open(file_path, 'rb') as f:
                             file_data = f.read()
@@ -85,7 +96,8 @@ def init_app(app):
                         'exif_date': '',  # Placeholder for EXIF date
                         'status': FILE_STATUS['OK'],
                         'progress': 100,  # Placeholder for progress
-                        'thumbnail': ''  # Placeholder for thumbnail
+                        'thumbnail': thumbnail_filename,
+                        'checksum': file_checksum
                     })
                     new_files_added = True
                     # Create a session-specific subdirectory in the upload path
@@ -104,6 +116,16 @@ def init_app(app):
                     file_path = os.path.join(upload_path, filename)
                     try:
                         uploaded_file.save(file_path)
+                        # Verify the checksum
+                        with open(file_path, 'rb') as f:
+                            file_data = f.read()
+                            actual_checksum = hashlib.md5(file_data).hexdigest()
+                        if actual_checksum != file_checksum:
+                            os.remove(file_path)  # Remove the file if checksum doesn't match
+                            continue  # Skip this file and continue with the next one
+                    except IOError as e:
+                        app.logger.error(f"Failed to save file {filename}: {e}")
+                        continue  # Skip this file and continue with the next one
                     except IOError as e:
                         app.logger.error(f"Failed to save file {filename}: {e}")
                         continue  # Skip this file and continue with the next one

@@ -1,3 +1,13 @@
+function generateChecksum(file, callback) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const data = event.target.result;
+        const checksum = CryptoJS.MD5(data).toString();
+        callback(checksum);
+    };
+    reader.readAsArrayBuffer(file);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const parallelUploadsInput = document.getElementById('parallel-uploads');
     const fileInput = document.getElementById('file-input');
@@ -14,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fileInput.addEventListener('change', function() {
         fileListBody.innerHTML = ''; // Clear the current file list
 
-        Array.from(fileInput.files).forEach(file => {
+        Array.from(fileInput.files).forEach((file, index) => {
         Array.from(fileInput.files).forEach((file, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -26,6 +36,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><progress value="0" max="100"></progress></td>
             `;
             fileListBody.appendChild(row);
+            createThumbnail(file, function(thumbnailDataUrl) {
+                // Add the thumbnail data URL to the row
+                const thumbnailCell = row.querySelector('td:nth-child(3)');
+                thumbnailCell.innerHTML = `<img src="${thumbnailDataUrl}" class="thumbnail">`;
+            });
+            generateChecksum(file, function(checksum) {
+                // Add the checksum to the row or store it in a way to be used during upload
+                row.dataset.checksum = checksum;
+            });
+        });
+    });
         createThumbnail(file, function(thumbnailDataUrl) {
             // Add the thumbnail data URL to the row
             const thumbnailCell = row.querySelector('td:nth-child(3)');
@@ -131,9 +152,20 @@ fileInput.addEventListener('change', function() {
                 <td>${file.size} bytes</td>
                 <td><img src="${thumbnailDataUrl}" class="thumbnail"></td>
                 <td>Ready to upload</td>
-                <td><progress value="0" max="100"></progress></td>
+                <td><progress id="progress_${index}" value="0" max="100"></progress></td>
             `;
             fileListBody.appendChild(row);
+            createThumbnail(file, function(thumbnailDataUrl) {
+                // Add the thumbnail data URL to the row
+                const thumbnailCell = row.querySelector('td:nth-child(3)');
+                thumbnailCell.innerHTML = `<img src="${thumbnailDataUrl}" class="thumbnail">`;
+            });
+            generateChecksum(file, function(checksum) {
+                // Add the checksum to the row or store it in a way to be used during upload
+                row.dataset.checksum = checksum;
+            });
+        });
+    });
         createThumbnail(file, function(thumbnailDataUrl) {
             // Add the thumbnail data URL to the row
             const thumbnailCell = row.querySelector('td:nth-child(3)');
