@@ -2,6 +2,7 @@ from flask import jsonify
 from flask import jsonify, request, redirect, url_for, render_template
 from . import create_app, secure_filename
 from PIL import Image
+import json
 import io
 import base64
 import os
@@ -31,9 +32,15 @@ def init_app(app):
             session_id = session['session_id']
 
             # Initialize or retrieve the file list for the session
-            if 'file_list' not in session:
-                session['file_list'] = []
-            file_list = session['file_list']
+            # Create a session-specific subdirectory in the upload path
+            upload_path = os.path.join(app.config['UPLOAD_FOLDER'], session_id)
+            os.makedirs(upload_path, exist_ok=True)
+            metadata_file_path = os.path.join(upload_path, 'metadata.json')
+            if not os.path.exists(metadata_file_path):
+                with open(metadata_file_path, 'w') as metadata_file:
+                    json.dump([], metadata_file)
+            with open(metadata_file_path, 'r') as metadata_file:
+                file_list = json.load(metadata_file)
 
             # Get the uploaded files list
             uploaded_files = request.files.getlist("files")
@@ -41,22 +48,23 @@ def init_app(app):
                 if file:
                     filename = secure_filename(file.filename)
                     # Create a session-specific subdirectory in the upload path
-                    upload_path = os.path.join(app.config['UPLOAD_FOLDER'], session_id)
-                    os.makedirs(upload_path, exist_ok=True)
                     def create_thumbnail(file_path):
                         with Image.open(file_path) as img:
                             img.thumbnail((100, 100))
                             thumb_io = io.BytesIO()
                             img.save(thumb_io, 'JPEG', quality=85)
                             thumb_io.seek(0)
-                            thumbnail = base64.b64encode(thumb_io.read()).decode('utf-8')
-                        return thumbnail
+                            thumbnail_filename = f"{uuid4()}.jpeg"
+                            thumbnail_path = os.path.join(upload_path, thumbnail_filename)
+                            with open(thumbnail_path, 'wb') as thumb_file:
+                                thumb_file.write(thumb_io.read())
+                        return thumbnail_filename
 
                     file_path = os.path.join(upload_path, filename)
                     file.save(file_path)
 
                     # Generate a low-resolution thumbnail
-                    thumbnail = create_thumbnail(file_path)
+                    thumbnail_filename = create_thumbnail(file_path)
 
                     # Add file metadata to the session file list
                     file_list.append({
@@ -65,13 +73,24 @@ def init_app(app):
                         'exif_date': '',  # Placeholder for EXIF date
                         'status': FILE_STATUS['OK'],
                         'progress': 100,  # Placeholder for progress
-                        'thumbnail': thumbnail
+                        'thumbnail': thumbnail_filename
                     })
+
+            # Save the updated file list to the metadata file
+            with open(metadata_file_path, 'w') as metadata_file:
+                json.dump(file_list, metadata_file)
 
             # Return a JSON response instead of redirecting
             return jsonify({'status': 'success', 'file_list': file_list})
         else:
-            file_list = session.get('file_list', [])
+            # Retrieve the file list from the metadata file
+            upload_path = os.path.join(app.config['UPLOAD_FOLDER'], session.get('session_id', ''))
+            metadata_file_path = os.path.join(upload_path, 'metadata.json')
+            if os.path.exists(metadata_file_path):
+                with open(metadata_file_path, 'r') as metadata_file:
+                    file_list = json.load(metadata_file)
+            else:
+                file_list = []
             return render_template('upload.html', file_list=file_list)
 
 
