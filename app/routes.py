@@ -157,7 +157,8 @@ def init_app(app):
                 # If no new files were added, render the template with the existing file list
                 session_id = session.get('session_id', str(uuid4()))
                 session['session_id'] = session_id  # Ensure the session has a unique identifier
-                return render_template('upload.html', file_list=file_list, session_id=session_id)
+                render_time = time() - start_time
+        return render_template('upload.html', file_list=file_list, session_id=session_id, render_time=render_time)
         else:
             # Retrieve the file list from the metadata file
             upload_path = os.path.join(app.config['UPLOAD_FOLDER'], session.get('session_id', ''))
