@@ -18,8 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // TODO: Implement logic to handle parallel uploads configuration
     });
 
-    // Removed duplicate declarations
-
     fileInput.addEventListener('change', function() {
         fileListBody.innerHTML = ''; // Clear the current file list
 
@@ -47,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
         uploadFiles(fileInput.files);
     });
 
-    // Rest of the existing code...
         createThumbnail(file, function(thumbnailDataUrl) {
             // Add the thumbnail data URL to the row
             const thumbnailCell = row.querySelector('td:nth-child(3)');
@@ -121,15 +118,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Removed the duplicate event listener for 'change' on fileInput
 
     uploadForm.addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent the default form submission
         uploadFiles(fileInput.files);
     });
 
-    // Rest of the existing code...
-});
         const formData = new FormData();
         Array.from(files).forEach(file => {
             formData.append('files[]', file, file.name);
@@ -170,8 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         xhr.send(formData);
-    }
-});
+
 function createThumbnail(file, callback) {
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -242,5 +235,4 @@ fileInput.addEventListener('change', function() {
             row.dataset.checksum = checksum;
         });
         });
-    });
-});
+    
