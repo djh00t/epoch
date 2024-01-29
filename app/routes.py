@@ -1,5 +1,6 @@
 from flask import jsonify
 from flask import jsonify, request, redirect, url_for, render_template
+import logging
 import hashlib
 from time import time
 from . import secure_filename
@@ -22,6 +23,8 @@ FILE_STATUS = {
 }
 
 
+logging.basicConfig(level=logging.DEBUG)
+
 def init_app(app):
     @app.route('/logout')
     def logout():
@@ -37,7 +40,9 @@ def init_app(app):
     @app.route('/upload', methods=['GET', 'POST'])
     def upload():
         start_time = time()
+        logging.debug("Upload endpoint called.")
         if request.method == 'POST':
+            logging.debug("Handling POST request for file upload.")
             # Ensure the session has a unique identifier
             if 'session_id' not in session:
                 session['session_id'] = str(uuid4())
@@ -61,7 +66,9 @@ def init_app(app):
             for uploaded_file in uploaded_files:
                 if uploaded_file:
                     filename = secure_filename(uploaded_file.filename)
+                    logging.debug(f"Received file: {filename}")
                     if filename in existing_filenames:
+                        logging.debug(f"File {filename} already exists. Skipping.")
                         continue  # Skip files with conflicting names
 
                     file_path = os.path.join(upload_path, filename)
@@ -69,6 +76,7 @@ def init_app(app):
                     file_checksum = request.form.get(f'{filename}-checksum')
                     try:
                         uploaded_file.save(file_path)
+                        logging.debug(f"File {filename} saved successfully.")
                         # Verify the checksum
                         with open(file_path, 'rb') as f:
                             file_data = f.read()
@@ -76,7 +84,9 @@ def init_app(app):
                         if actual_checksum != file_checksum:
                             os.remove(file_path)  # Remove the file if checksum doesn't match
                             continue  # Skip this file and continue with the next one
+                        logging.debug(f"Checksum verified for file {filename}.")
                     except IOError as e:
+                        logging.error(f"Failed to save file {filename}: {e}")
                         app.logger.error(f"Failed to save file {filename}: {e}")
                         continue  # Skip this file and continue with the next one
                         # Verify the checksum
@@ -86,7 +96,9 @@ def init_app(app):
                         if actual_checksum != file_checksum:
                             os.remove(file_path)  # Remove the file if checksum doesn't match
                             continue  # Skip this file and continue with the next one
+                        logging.debug(f"Checksum verified for file {filename}.")
                     except IOError as e:
+                        logging.error(f"Failed to save file {filename}: {e}")
                         app.logger.error(f"Failed to save file {filename}: {e}")
                         continue  # Skip this file and continue with the next one
 
@@ -117,6 +129,7 @@ def init_app(app):
                     file_path = os.path.join(upload_path, filename)
                     try:
                         uploaded_file.save(file_path)
+                        logging.debug(f"File {filename} saved successfully.")
                         # Verify the checksum
                         with open(file_path, 'rb') as f:
                             file_data = f.read()
@@ -124,10 +137,13 @@ def init_app(app):
                         if actual_checksum != file_checksum:
                             os.remove(file_path)  # Remove the file if checksum doesn't match
                             continue  # Skip this file and continue with the next one
+                        logging.debug(f"Checksum verified for file {filename}.")
                     except IOError as e:
+                        logging.error(f"Failed to save file {filename}: {e}")
                         app.logger.error(f"Failed to save file {filename}: {e}")
                         continue  # Skip this file and continue with the next one
                     except IOError as e:
+                        logging.error(f"Failed to save file {filename}: {e}")
                         app.logger.error(f"Failed to save file {filename}: {e}")
                         continue  # Skip this file and continue with the next one
 
@@ -149,11 +165,14 @@ def init_app(app):
             # Save the updated file list to the metadata file
             with open(metadata_file_path, 'w') as metadata_file:
                 json.dump(file_list, metadata_file)
+            logging.debug("File list updated and saved.")
 
             if new_files_added:
+                logging.debug("New files added. Redirecting to GET method.")
                 # Redirect to the GET method to display the updated file list
                 return redirect(url_for('upload'))
             else:
+                logging.debug("No new files added. Rendering upload template.")
                 # If no new files were added, render the template with the existing file list
                 session_id = session.get('session_id', str(uuid4()))
                 session['session_id'] = session_id  # Ensure the session has a unique identifier
