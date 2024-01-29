@@ -43,6 +43,15 @@ def init_app(app):
                     # Create a session-specific subdirectory in the upload path
                     upload_path = os.path.join(app.config['UPLOAD_FOLDER'], session_id)
                     os.makedirs(upload_path, exist_ok=True)
+                    def create_thumbnail(file_path):
+                        with Image.open(file_path) as img:
+                            img.thumbnail((100, 100))
+                            thumb_io = io.BytesIO()
+                            img.save(thumb_io, 'JPEG', quality=85)
+                            thumb_io.seek(0)
+                            thumbnail = base64.b64encode(thumb_io.read()).decode('utf-8')
+                        return thumbnail
+
                     file_path = os.path.join(upload_path, filename)
                     file.save(file_path)
 
@@ -58,22 +67,11 @@ def init_app(app):
                         'progress': 100,  # Placeholder for progress
                         'thumbnail': thumbnail
                     })
-            # The line above is removed as it is a duplicate and incorrectly indented
 
             return redirect(url_for('upload'))
         else:
             file_list = session.get('file_list', [])
             return render_template('upload.html', file_list=file_list)
 
-    def create_thumbnail(file_path):
-        with Image.open(file_path) as img:
-            img.thumbnail((100, 100))
-            thumb_io = io.BytesIO()
-            img.save(thumb_io, 'JPEG', quality=85)
-            thumb_io.seek(0)
-            thumbnail = base64.b64encode(thumb_io.read()).decode('utf-8')
-        return thumbnail
-                    file.save(os.path.join(upload_path, filename))
-            return redirect(url_for('upload'))
-        return render_template('upload.html')
+    return render_template('upload.html')
 
