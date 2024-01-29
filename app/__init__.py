@@ -1,6 +1,6 @@
 from flask import Flask
 from werkzeug.utils import secure_filename
-from flask_session import Session
+from Flask-Session import Session
 import os
 from uuid import uuid4
 
@@ -13,7 +13,7 @@ def create_app():
 
     # Additional configuration can go here
     app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(app.instance_path, 'uploads')
-    app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/uploads/'
+    app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/upload/'
 
     # Configure session to use filesystem instead of signed cookies
     app.config['SESSION_TYPE'] = 'filesystem'
