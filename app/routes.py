@@ -44,6 +44,7 @@ def init_app(app):
 
             # Get the uploaded files list
             uploaded_files = request.files.getlist("files")
+            new_files_added = False
             existing_filenames = {file['name'] for file in file_list}
             for file in uploaded_files:
                 if file:
@@ -78,10 +79,18 @@ def init_app(app):
                         'progress': 100,  # Placeholder for progress
                         'thumbnail': thumbnail_filename
                     })
+                    new_files_added = True
 
             # Save the updated file list to the metadata file
             with open(metadata_file_path, 'w') as metadata_file:
                 json.dump(file_list, metadata_file)
+
+            if new_files_added:
+                # Redirect to the GET method to display the updated file list
+                return redirect(url_for('upload'))
+            else:
+                # If no new files were added, render the template with the existing file list
+                return render_template('upload.html', file_list=file_list)
 
             # Redirect to the GET method to display the file list
             return redirect(url_for('upload'))
