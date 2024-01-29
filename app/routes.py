@@ -2,6 +2,7 @@ from flask import jsonify
 from flask import jsonify, request, redirect, url_for, render_template
 from . import create_app, secure_filename
 import os
+from uuid import uuid4
 from flask import session
 
 def init_app(app):
