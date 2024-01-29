@@ -27,6 +27,15 @@
                 </tr>
             </thead>
             <tbody>
+                {% for file in file_list %}
+                    <tr>
+                        <td>{{ file.name }}</td>
+                        <td>{{ file.size }} bytes</td>
+                        <td>{{ file.exif_date }}</td>
+                        <td>{{ file.status }}</td>
+                        <td><progress value="{{ file.progress }}" max="100"></progress></td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
