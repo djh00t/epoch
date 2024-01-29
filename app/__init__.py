@@ -29,18 +29,18 @@ class FileSystemSessionInterface(SessionInterface):
         return self.cache.get(sid)
 
     def save_session(self, app, session, response):
-        domain = self.get_cookie_domain(app)
-        sid = request.cookies.get(app.session_interface.session_cookie_name)
-        if not session or not sid:
-            self.cache.delete(sid)
-            if session.modified:
-                response.delete_cookie(app.session_cookie_name, domain=domain)
+        sid = session.get('sid')
+        if not session:
+            if sid:
+                self.cache.delete(sid)
+                response.delete_cookie(app.session_cookie_name)
             return
+        if not sid:
+            sid = self._generate_sid()
+            session['sid'] = sid
         cookie_exp = self.get_expiration_time(app, session)
-        val = self.cache.set(sid, dict(session), timeout=app.permanent_session_lifetime)
-        response.set_cookie(app.session_cookie_name, sid,
-        response.set_cookie(app.session_cookie_name, session.sid,
-                            expires=cookie_exp, httponly=True, domain=domain)
+        self.cache.set(sid, dict(session), timeout=app.permanent_session_lifetime)
+        response.set_cookie(app.session_cookie_name, sid, expires=cookie_exp, httponly=True, domain=self.get_cookie_domain(app))
 
     def _generate_sid(self):
         return str(uuid4())
