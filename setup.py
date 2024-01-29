@@ -39,12 +39,17 @@ def main():
 
     if env_exists:
         # Activate the environment
-        print(f"Activating Conda environment '{ENV_NAME}'...")
-        os.system(f"conda activate {ENV_NAME}")
+        current_env = os.environ.get('CONDA_DEFAULT_ENV')
+        if current_env != ENV_NAME:
+            print(f"Conda environment '{ENV_NAME}' exists but is not active.")
+            print(f"Please activate the environment by running 'conda activate {ENV_NAME}' manually.")
+        else:
+            print(f"Conda environment '{ENV_NAME}' is already active.")
     else:
         # Create the environment
         print(f"Creating Conda environment '{ENV_NAME}' with Python {PYTHON_VERSION}...")
         os.system(f"conda create --name {ENV_NAME} python={PYTHON_VERSION} --yes")
+        print(f"Please activate the newly created environment by running 'conda activate {ENV_NAME}' manually.")
         os.system(f"conda activate {ENV_NAME}")
 
     # Install the required libraries from condareq.txt
