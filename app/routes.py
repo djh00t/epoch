@@ -18,6 +18,13 @@ FILE_STATUS = {
     'FAILED': 'Failed'
 }
 
+@app.route('/logout')
+def logout():
+    # Clear the session to log the user out
+    session.clear()
+    # Redirect to the main page or login page
+    return redirect(url_for('upload'))
+
 def init_app(app):
     @app.route('/health', methods=['GET'])
     def health_check():
