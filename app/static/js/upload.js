@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         xhr.upload.onprogress = function(event) {
             if (event.lengthComputable) {
-                const percentComplete = (event.loaded / event.total) * 100;
+                const percentComplete = Math.round((event.loaded / event.total) * 100);
                 Array.from(files).forEach((file, index) => {
                     const progress = document.getElementById(`progress_${index}`);
                     progress.value = percentComplete;
@@ -56,11 +56,22 @@ document.addEventListener('DOMContentLoaded', function() {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 console.log('Upload complete!');
-                // Handle successful upload here
+                // Update the UI to reflect that the upload is complete
+                Array.from(files).forEach((file, index) => {
+                    const statusCell = document.getElementById(`status_${index}`);
+                    if (statusCell) {
+                        statusCell.textContent = 'Upload complete';
+                    }
+                });
             } else {
                 console.error('Upload failed.');
                 // Handle upload failure here
             }
+        };
+
+        // Prevent the page from navigating away after the upload
+        xhr.onloadend = function() {
+            // Update the UI or notify the user as needed
         };
 
         xhr.send(formData);

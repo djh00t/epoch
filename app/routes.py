@@ -68,7 +68,8 @@ def init_app(app):
                         'thumbnail': thumbnail
                     })
 
-            return redirect(url_for('upload'))
+            # Return a JSON response instead of redirecting
+            return jsonify({'status': 'success', 'file_list': file_list})
         else:
             file_list = session.get('file_list', [])
             return render_template('upload.html', file_list=file_list)
