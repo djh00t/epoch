@@ -21,7 +21,11 @@ class FileSystemSessionInterface(SessionInterface):
         sid = request.cookies.get(app.session_interface.session_cookie_name)
         if not sid:
             sid = self._generate_sid()
-            return self.cache.get(sid) or self.cache.new()
+            session_data = self.cache.get(sid)
+            if session_data is None:
+                session_data = {}
+                self.cache.set(sid, session_data)
+            return session_data
         return self.cache.get(sid)
 
     def save_session(self, app, session, response):
