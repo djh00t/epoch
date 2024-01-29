@@ -7,6 +7,8 @@ import os
 from uuid import uuid4
 
 class FileSystemSessionInterface(SessionInterface):
+    session_cookie_name = 'session'
+
     def __init__(self, app):
         self.cache = FileSystemCache(app.config['SESSION_FILE_DIR'],
                                      threshold=app.config['SESSION_FILE_THRESHOLD'],
