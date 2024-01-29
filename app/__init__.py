@@ -1,10 +1,13 @@
 from flask import Flask
+import logging
 from werkzeug.utils import secure_filename
 from flask.sessions import SecureCookieSessionInterface
 from flask.sessions import SessionInterface, SessionMixin
 from cachelib.file import FileSystemCache
 import os
 from uuid import uuid4
+
+logging.basicConfig(level=logging.DEBUG)
 
 class FileSystemSessionInterface(SessionInterface):
     session_cookie_name = 'session'
@@ -38,6 +41,7 @@ class FileSystemSessionInterface(SessionInterface):
 
 def create_app():
     app = Flask(__name__)
+    logging.debug('Creating Flask app instance')
 
     # Configure the image upload destination
     app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -49,6 +53,7 @@ def create_app():
 
     # Set the secret key for session signing
     app.config['SECRET_KEY'] = '38CF8089-7545-4D21-A169-BB1871F0A633'
+    logging.debug('Secret key set to: %s', app.config['SECRET_KEY'])
 
     # Configure session to use filesystem instead of signed cookies
     app.config['SESSION_TYPE'] = 'filesystem'
@@ -60,5 +65,7 @@ def create_app():
     # Include our Routes
     from . import routes
     routes.init_app(app)
+
+    logging.debug('App configuration: %s', app.config)
 
     return app
