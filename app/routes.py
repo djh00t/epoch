@@ -1,5 +1,6 @@
 from flask import jsonify
 from flask import jsonify, request, redirect, url_for, render_template
+import hashlib
 from time import time
 from . import secure_filename
 from PIL import Image
