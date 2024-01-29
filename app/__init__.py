@@ -4,10 +4,17 @@ from werkzeug.utils import secure_filename
 from flask.sessions import SecureCookieSessionInterface
 from flask.sessions import SessionInterface, SessionMixin
 from cachelib.file import FileSystemCache
+from werkzeug.datastructures import CallbackDict
 import os
 from uuid import uuid4
 
 logging.basicConfig(level=logging.DEBUG)
+
+class Session(CallbackDict, SessionMixin):
+    def __init__(self, initial=None, sid=None):
+        CallbackDict.__init__(self, initial)
+        self.sid = sid
+        self.modified = False
 
 class FileSystemSessionInterface(SessionInterface):
     session_cookie_name = 'session'
@@ -38,6 +45,7 @@ class FileSystemSessionInterface(SessionInterface):
         if not sid:
             sid = self._generate_sid()
             session['sid'] = sid
+        session.permanent = session.get('permanent', app.permanent_session_lifetime)
         cookie_exp = self.get_expiration_time(app, session)
         self.cache.set(sid, dict(session), timeout=app.permanent_session_lifetime)
         response.set_cookie(app.session_cookie_name, sid, expires=cookie_exp, httponly=True, domain=self.get_cookie_domain(app))
