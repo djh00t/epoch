@@ -47,8 +47,10 @@ def create_app():
     app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(app.instance_path, 'uploads')
     app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/upload/'
 
+    # Set the secret key for session signing
+    app.config['SECRET_KEY'] = os.urandom(24)
+
     # Configure session to use filesystem instead of signed cookies
-    app.secret_key = os.urandom(24)
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['SESSION_FILE_DIR'] = os.path.join(app.instance_path, 'flask_session')
     app.config['SESSION_FILE_THRESHOLD'] = 500
