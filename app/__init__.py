@@ -1,6 +1,6 @@
 from flask import Flask
 from werkzeug.utils import secure_filename
-from Flask-Session import Session
+from flask_session import Session
 import os
 from uuid import uuid4
 
