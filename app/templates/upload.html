@@ -11,7 +11,7 @@
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
         <label for="parallel-uploads">Parallel Uploads:</label>
         <input type="number" id="parallel-uploads" name="parallel-uploads" min="1" max="10" value="3">
-        <input type="file" name="files" multiple>
+        <input type="file" id="file-input" name="files" multiple onchange="updateFileList()">
         <input type="submit" value="Upload">
     </form>
     <div id="file-list">
@@ -25,6 +25,8 @@
                     <th>Progress</th>
                 </tr>
             </thead>
+            <tbody id="file-list-body">
+            <!-- File list will be populated here by JavaScript -->
             <tbody>
         <ul>
             {% for file in file_list %}
@@ -39,6 +41,28 @@
             </tbody>
         </table>
     </div>
+    <script>
+    function updateFileList() {
+        const input = document.getElementById('file-input');
+        const fileListBody = document.getElementById('file-list-body');
+
+        // Clear the current file list
+        fileListBody.innerHTML = '';
+
+        // Iterate over the files and add them to the file list
+        for (const file of input.files) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${file.name}</td>
+                <td>${file.size} bytes</td>
+                <td>Not available</td>
+                <td>Ready to upload</td>
+                <td><progress value="0" max="100"></progress></td>
+            `;
+            fileListBody.appendChild(row);
+        }
+    }
+    </script>
     <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 </body>
 </html>
