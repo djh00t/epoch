@@ -1,0 +1,76 @@
+Project Name: Epoch
+
+Project Detailed Overview:
+Epoch is a web-based application tailored for creating timelapse videos from a series of metadata time-stamped photos. The application's core functionality involves uploading and processing a set (10's, 100's or 1000's) of photos, intelligently grouping them based on the date, time and potentially also location they were taken.
+
+The application will identify a primary subject in the photos using advanced image processing techniques and select the most representative photo from each date to ensure that the subject is correctly identified. A workflow process for accepting and/or correcting subject identification must be created to allow the user to provide corrective feedback to the AI toolset used to identify the common subject.
+
+These photos are then adjusted for consistency in perspective and proportion, and seamlessly compiled into a high-quality timelapse video.
+
+The user should be able to control and/or provide feedback for the following items:
+ - Subject identification (What to focus normalization on and/or to identify background for removal)
+ - Subject zoom/cropping/perspective normalization (To keep each frame looking as close to the previous one as possible, providing smooth transitions between changes in each frame.)
+ - Number of photos used per day (Default 1)
+ - Number of frames per second in final video (minimum 0.1, maximum 30)
+ - Minimum length of video (Default 10 seconds)
+ - If the background should be removed, leaving only the subject in frame or not.
+
+Development Requirements:
+- Proficiency in Python, specifically with the Flask framework for web development.
+- Multithreaded file uploader
+- Expertise in image processing, particularly using libraries like OpenCV or Yolo for subject identification, cropping, and zooming.
+- Skills in front-end web development: HTML, CSS, JavaScript (for building user interfaces in Flask).
+- Knowledge of Docker for application containerization and deployment.
+- Familiarity with machine learning or computer vision is a plus for subject identification in images.
+
+Specific Project Modules and Responsibilities:
+1. Web Framework Setup: 
+   - Develop a Flask application with robust file upload capabilities, supporting large files, zip/gzip file upload/unpack and multithreaded uploads.
+
+2. Image Metadata Extraction and Sorting:
+   - Implement a module to efficiently read and sort image metadata (EXIF data), particularly focusing on date and time.
+
+3. Subject Identification in Images:
+   - Utilize computer vision techniques or machine learning models to identify and highlight subjects within each image
+
+4. User Interaction for Subject Verification:
+   - Provide a frame by frame user feedback interface. It should allow the user to flip rapidly forward and backward between frames in low resolution with and without the subject shaded/outlined so the user can quickly ensure that the correct subject has been identified.
+   - Create a workflow process that allows users to confirm or adjust the identified subjects in images.
+   - Ensure that the users feedback is fed to the toolset to ensure that future usage of the toolset is more accurate. (Maybe a vector database?)
+
+5. Image Cropping, Zooming & Background Removal:
+   - Develop algorithms to adjust images, ensuring uniformity in size, perspective, and proportion of the subject across all selected photos. The goal of this is to provide the smoothest possible transitions, showing change without jarring differences in subject position and scale between frames.
+
+6. User Validation of Cropping and Zooming:
+   - Provide a frame by frame user feedback interface. It should allow the user to flip rapidly forward and backward between frames in low resolution with and without the subject shaded/outlined so that scale, perspective and other attributes can be easily viewed and compared. Each frame should have metadata explaining changes made to it and any user provided feedback to ensure that future usage is more accurate.
+
+7. Timelapse Video Creation:
+   - Compile the adjusted images into a full resolution smooth timelapse video, adhering to default or user supplied criteria for duration and frame rate. Video options should be 720p, 1080p and 4K. Default should be the closest format to the final cropped photo resolutions, intelligently upscaling/downscaling where appropriate.
+
+8. Testing and Integration:
+   - Provide thorough unit testing of each module, followed by meticulous integration testing of the complete system.
+
+9. Documentation and Finalization:
+   - Prepare detailed documentation, including a README.md, for the entire application, covering setup, usage, and API references.
+
+Standards and Best Practices:
+- A systems design should be developed first showing each module and the technology it uses.
+- Databases and supporting infrastructure should be common where appropriate.
+- Code should be written in a modular, reusable, and maintainable manner, adhering to the Python PEP 8 style guide.
+- The user interface should be responsive and user-friendly.
+- It is possible that this application will also have a mobile app that must integrate into it in future.
+- All code should be thoroughly documented and tested (100% pytest coverage).
+- Use microservices architecture for scalability and Docker for containerization.
+
+Additional Specifics:
+- The application is named 'epoch'
+- Security considerations, especially for file uploads and data processing, are paramount.
+- The project focuses on providing a high-quality user experience, with an emphasis on the accuracy and visual appeal of the final timelapse video.
+- The application is targeted at a mass-market userbase. It is not expected that professional photographers will be using it.
+
+Future Development and Collaboration:
+- The project will require ongoing collaboration, with each module potentially being developed by different developers.
+- Seamless integration and consistent communication among team members are crucial for the project's success.
+- Regular updates and adherence to the project timeline are expected.
+- All modules must be documented using Google docstrings as if they are freestanding libraries.
+

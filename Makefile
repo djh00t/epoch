@@ -31,6 +31,7 @@ clean:
 	find . -type f -name '*.pyc' -delete
 	find . -type f -name '*.pyo' -delete
 	find . -type d -name '__pycache__' -delete
+	rm -rf ./uploads/*
 	rm -rf $(VENV_PATH)
 
 # Reset the project to initial state

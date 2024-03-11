@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
 uploadForm.addEventListener("submit", function (event) {
   event.preventDefault(); // Prevent the default form submission
   uploadFiles(fileInput.files);
-});
+}); // Ensure this closing bracket matches the opening bracket for the 'DOMContentLoaded' event listener
 
 function createThumbnail(file, callback) {
   const reader = new FileReader();
@@ -227,7 +227,7 @@ fileInput.addEventListener("change", function () {
 uploadForm.addEventListener("submit", function (event) {
   event.preventDefault(); // Prevent the default form submission
   uploadFiles(fileInput.files);
-});
+}); // Ensure this closing bracket matches the opening bracket for the 'DOMContentLoaded' event listener
 
 const formData = new FormData();
 Array.from(files).forEach((file) => {

@@ -53,8 +53,8 @@ def main():
         os.system(f"conda activate {ENV_NAME}")
 
     # Install the required libraries from condareq.txt
-    print("Installing libraries from condareq.txt...")
-    os.system(f"conda env update --name {ENV_NAME} --file condareq.txt --prune")
+    print("Installing libraries from environment.yml...")
+    os.system(f"conda env update --name {ENV_NAME} --file environment.yml --prune")
 
     print("Setup complete.")
 
